@@ -28,6 +28,6 @@ public class User {
     private String name;
 
     @NotNull(groups = Marker.Create.class)
-    @PastOrPresent
+    @PastOrPresent(groups = {Marker.Create.class, Marker.Update.class})
     private LocalDate birthday;
 }
