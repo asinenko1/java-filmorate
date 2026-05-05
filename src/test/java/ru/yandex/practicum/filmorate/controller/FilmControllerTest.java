@@ -1,22 +1,26 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.Marker;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.time.LocalDate;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTest {
     private FilmController controller;
     private Film film;
+    private Validator validator;
 
     @BeforeEach
     void beforeEach() {
         controller = new FilmController();
+        validator = Validation.buildDefaultValidatorFactory().getValidator();
+
         film = new Film();
         film.setName("Film name");
         film.setDescription("Film description");
@@ -36,28 +40,38 @@ public class FilmControllerTest {
     void shouldNotCreateFilmWithEmptyName() {
         film.setName("");
 
-        assertThrows(ValidationException.class, () -> controller.create(film));
+        var violations = validator.validate(film, Marker.Create.class);
+
+        assertFalse(violations.isEmpty());
+
     }
 
     @Test
     void shouldNotCreateFilmWithLongDescription() {
         film.setDescription(":)".repeat(101));
 
-        assertThrows(ValidationException.class, () -> controller.create(film));
+        var violations = validator.validate(film, Marker.Create.class);
+
+        assertFalse(violations.isEmpty());
+
     }
 
     @Test
     void shouldNotCreateFilmWithReleaseDateBefore1895() {
         film.setReleaseDate(LocalDate.of(1700, 3, 15));
 
-        assertThrows(ValidationException.class, () -> controller.create(film));
+        var violations = validator.validate(film, Marker.Create.class);
+
+        assertFalse(violations.isEmpty());
     }
 
     @Test
     void shouldNotCreateFilmWithZeroDuration() {
         film.setDuration(0);
 
-        assertThrows(ValidationException.class, () -> controller.create(film));
+        var violations = validator.validate(film, Marker.Create.class);
+
+        assertFalse(violations.isEmpty());
     }
 
 }
