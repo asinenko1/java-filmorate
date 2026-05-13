@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.Marker;
@@ -36,6 +37,7 @@ public class Film {
 
     private Set<Integer> likes = new HashSet<>();
 
+    @JsonIgnore
     @AssertTrue(groups = {Marker.Create.class, Marker.Update.class})
     public boolean isReleaseDateValid() {
         return releaseDate == null || !releaseDate.isBefore((FIRST_RELEASE_DATE));
