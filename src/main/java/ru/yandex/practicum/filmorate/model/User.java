@@ -5,6 +5,8 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.Marker;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
@@ -30,4 +32,6 @@ public class User {
     @NotNull(groups = Marker.Create.class)
     @PastOrPresent(groups = {Marker.Create.class, Marker.Update.class})
     private LocalDate birthday;
+
+    private Set<Integer> friends = new HashSet<>();
 }

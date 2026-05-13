@@ -5,6 +5,8 @@ import lombok.Data;
 import ru.yandex.practicum.filmorate.Marker;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Film.
@@ -22,7 +24,6 @@ public class Film {
     @NotBlank (groups = Marker.Create.class)
     private String name;
 
-
     @Size(max = MAX_DESCRIPTION_LENGTH, groups = {Marker.Create.class, Marker.Update.class})
     private String description;
 
@@ -32,6 +33,8 @@ public class Film {
     @NotNull(groups = Marker.Create.class)
     @Positive(groups = {Marker.Create.class, Marker.Update.class})
     private Integer duration;
+
+    private Set<Integer> likes = new HashSet<>();
 
     @AssertTrue(groups = {Marker.Create.class, Marker.Update.class})
     public boolean isReleaseDateValid() {
