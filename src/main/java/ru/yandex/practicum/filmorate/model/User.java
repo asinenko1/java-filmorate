@@ -1,10 +1,13 @@
 package ru.yandex.practicum.filmorate.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.Marker;
 
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 public class User {
@@ -20,6 +23,7 @@ public class User {
     @NotBlank(groups = Marker.Create.class)
     private String login;
 
+    @JsonIgnore
     @AssertTrue(groups = {Marker.Create.class, Marker.Update.class})
     public boolean isLoginValid() {
         return login == null || (!login.isBlank() && !login.contains(" "));
@@ -30,4 +34,6 @@ public class User {
     @NotNull(groups = Marker.Create.class)
     @PastOrPresent(groups = {Marker.Create.class, Marker.Update.class})
     private LocalDate birthday;
+
+    private Set<Integer> friends = new HashSet<>();
 }
