@@ -9,6 +9,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -32,12 +33,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film update(Film film) {
-        if (!films.containsKey(film.getId())) {
-            log.warn("Такого фильма нет в базе с id = {}", film.getId());
-            throw new NotFoundException("Фильм с id = " + film.getId() + " не найден");
-        }
-
-        Film oldFilm = films.get(film.getId());
+        Film oldFilm = getById(film.getId());
 
         if (film.getName() != null) {
             oldFilm.setName(film.getName());
@@ -59,13 +55,8 @@ public class InMemoryFilmStorage implements FilmStorage {
 
     @Override
     public Film getById(Integer id) {
-        Film film = films.get(id);
-
-        if (film == null) {
-            throw new NotFoundException("Фильм с id " + id + " не найден");
-        }
-
-        return film;
+        return Optional.ofNullable(films.get(id))
+                .orElseThrow(() -> new NotFoundException("Фильм с id " + id + " не найден"));
     }
 
     private int getNextId() {

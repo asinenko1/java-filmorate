@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @Component
@@ -34,12 +35,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User update(User user) {
-        if (!users.containsKey(user.getId())) {
-            log.warn("There is no such user with id = {}", user.getId());
-            throw new NotFoundException("Пользователь с id = " + user.getId() + " не найден");
-        }
-
-        User oldUser = users.get(user.getId());
+        User oldUser = getById(user.getId());
 
         if (user.getEmail() != null) {
             oldUser.setEmail(user.getEmail());
@@ -63,7 +59,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getById(Integer id) {
-        return users.get(id);
+        return Optional.ofNullable(users.get(id))
+                .orElseThrow(() -> new NotFoundException("Пользователь с id " + id + " не найден"));
     }
 
     private void setLoginAsName(User user) {
